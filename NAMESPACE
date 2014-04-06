@@ -1,0 +1,3 @@
+exportPattern("^[[:alpha:]]+")
+useDynLib(EntropyEstimation)
+export(KL.Plugin, KL.z, SymKL.z, SymKL.Plugin, KL.sd, SymKL.sd, RenyiEq.z, Renyi.z, Tsallis.z, Hill.z, Entropy.sd, Entropy.z, RenyiEq.sd, MI.z, GenSimp.z, MI.sd)
