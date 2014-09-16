@@ -60,14 +60,14 @@ void KlSharp(int *c1, int *c2, int *h, double *result)
         else{
             double temp = 1;
             double temp2 = 0;
-            for(int k = 1; k<(samples2-c2[i]); k++)
+            for(int k = 1; k<=(samples2-c2[i]); k++)
             {
                 temp *= 1-((double)c2[i])/(samples2-k+1);
                 temp2 += temp/k;
                 
             }
             temp = 1;
-            for(int k = 1; k<(samples1-c1[i]); k++)
+            for(int k = 1; k<=(samples1-c1[i]); k++)
             {
                 temp *= 1- (  ((double)c1[i]) - 1  )/(samples1-k);
                 temp2 -= temp/k;
@@ -257,7 +257,7 @@ void EntropySharp(int *c1, int *h, double *result)
         {
             double temp = 1;
             double temp2 = 0;
-            for(int k = 1; k<(samples1-c1[i]); k++)
+            for(int k = 1; k<=(samples1-c1[i]); k++)
             {
                 temp *= 1- (  ((double)c1[i]) - 1  )/(samples1-k);
                 temp2 += temp/k;
@@ -294,7 +294,7 @@ void RenyiEqEntropySharp(int *c1, int *h, double *r, double *result)
             w=1;
             double temp = 1;
             double temp2 = 0;
-            for(int k = 1; k<(samples1-c1[i]); k++)
+            for(int k = 1; k<=(samples1-c1[i]); k++)
             {
                 w *= (1- *r/k);
                 temp *= 1- (  ((double)c1[i]) - 1  )/(samples1-k);
