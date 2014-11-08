@@ -10,8 +10,8 @@ Contains methods for the estimation of Shannon's entropy, variants of Renyi's en
 \tabular{ll}{
 Package: \tab EntropyEstimation\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2014-09-15\cr
+Version: \tab 1.1\cr
+Date: \tab 2014-11-08\cr
 License: \tab GPL3\cr}
 }
 \author{
@@ -26,7 +26,7 @@ Z. Zhang and M. Grabchak (2013). Bias Adjustment for a Nonparametric Entropy Est
 
 Z. Zhang and M. Grabchak (2014a). Entropic representation and estimation of diversity indices. http://arxiv.org/abs/1403.3031.
 
-Z. Zhang and M. Grabchak (2014b). Nonparametric Estimation of Kullback-Leibler Divergence. Neural Computation, DOI 10.1162/NECO_a_00646.
+Z. Zhang and M. Grabchak (2014b). Nonparametric Estimation of Kullback-Leibler Divergence. Neural Computation, 26(11): 2570-2593.
 
 Z. Zhang and L. Zheng (2014). A Mutual Information Estimator with Exponentially Decaying Bias.
 

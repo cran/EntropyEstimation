@@ -64,6 +64,18 @@ GenSimp.z<- function(x,r){
     }
 }
 
+GenSimp.sd<- function(x,r){
+    if(r<1){
+        cat("r must be a positive integer.")
+    }
+    else{
+        if(r>=sum(x)){
+            cat("r must be strictly less than sum(x).")
+        }
+        else .C("GenSimpSd", as.integer(x), as.integer(length(x)), as.integer(r), as.double(0.0) )[[4]]
+    }
+}
+
 RenyiEq.z<- function(x,r){
     if(r <= 0){
         cat("r must be greater than zero")
@@ -185,4 +197,47 @@ MI.sd<- function(y){
         }#for j
     }#for i
     .C("MISd", as.integer(as.vector(x)), as.integer(length(x)), as.double(as.vector(g)), as.double(0.0))[[4]]
+}
+
+
+Renyi.sd<- function(x,r){
+    if(r <= 0){
+        cat("r must be greater than zero")
+    }
+    else{
+        if(r==1){
+            cat("r should not equal 1, use Entropy.sd instead.")
+        }
+        else{
+            RenyiEq.sd(x,r)/(abs(1-r)*RenyiEq.z(x,r))
+        }
+    }
+}
+
+Tsallis.sd<- function(x,r){
+    if(r <= 0){
+        cat("r must be greater than zero")
+    }
+    else{
+        if(r==1){
+            cat("r should not equal 1, use Entropy.sd instead.")
+        }
+        else{
+            RenyiEq.sd(x,r)/(abs(1-r))
+        }
+    }
+}
+
+Hill.sd<- function(x,r){
+    if(r <= 0){
+        cat("r must be greater than zero")
+    }
+    else{
+        if(r==1){
+            Entropy.sd(x)*exp(Entropy.z(x))
+        }
+        else{
+            RenyiEq.sd(x,r)*(RenyiEq.z(x,r))^(r/(1-r))/abs(1-r)
+        }
+    }
 }

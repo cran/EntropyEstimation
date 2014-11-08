@@ -1,5 +1,5 @@
 //
-//  Created by Lijuan Cao and Michael Grabchak on 3/30/14.
+//  Created by Lijuan Cao and Michael Grabchak on 11/8/14.
 //
 
 #include <stdio.h>
@@ -484,6 +484,72 @@ void MISd(int *c1orig, int *h, double *g, double *result)
     {
         samples1 +=c1orig[i];
         c1[i] = c1orig[i];
+    }
+    
+    double Sigma1[*h-1][*h-1];
+    for(int i = 0; i < *h -1; i++)
+    {
+        for(int j = 0; j < *h-1; j++)
+        {
+            if(i==j)
+            {
+                Sigma1[i][j] = c1[i]/((double)samples1)*(1-c1[i]/((double)samples1));
+            }
+            else
+            {
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
+            }
+        }
+    }
+    
+    double var = 0;
+    for(int i = 0; i< *h-1; i++)
+    {
+        for(int j = 0; j< *h-1; j++)
+        {
+            var += g[i]*Sigma1[i][j]*g[j];
+        }
+    }
+    
+    
+    *result = sqrt(var);
+    
+}
+
+void GenSimpSd(int *c1orig, int *h, int *r, double *result)
+{
+    double g[(*h-1)];
+    double c1[*h];
+    
+    int samples1 = 0;
+    
+    for(int i = 0; i< *h; i++)
+    {
+        samples1 +=c1orig[i];
+        c1[i] = c1orig[i];
+    }
+    
+    int index = 0;
+    for(int i = *h-1; i>=0; i--)
+    {
+        if(c1[i] !=0)
+        {
+            index = i;
+            break;
+        }
+        
+    }
+    
+    for(int i = 0; i < *h-1; i++)
+    {
+        if(c1[i] ==0)
+        {
+            g[i] = 0;
+        }
+        else
+        {
+            g[i] = pow((1 - c1[i]/samples1), *r) - *r * (c1[i]/samples1)*pow((1 - c1[i]/samples1), *r - 1) - pow((1 - c1[index]/samples1), *r) + *r *(c1[index]/samples1)* pow((1 - c1[index]/samples1), *r - 1);
+        }
     }
     
     double Sigma1[*h-1][*h-1];

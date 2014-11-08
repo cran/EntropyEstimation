@@ -13,7 +13,7 @@ Vector of counts from the first distribution. Must be integer valued. Each entry
 Vector of counts from the second distribution. Must be integer valued. Each entry represents the number of observations of a distinct letter.}
 }
 \references{
-Z. Zhang and M. Grabchak (2014b). Nonparametric Estimation of Kullback-Leibler Divergence. Neural Computation, DOI 10.1162/NECO_a_00646.
+Z. Zhang and M. Grabchak (2014b). Nonparametric Estimation of Kullback-Leibler Divergence. Neural Computation, 26(11): 2570-2593.
 }
 \author{Lijuan Cao and Michael Grabchak}
 \examples{

@@ -26,4 +26,8 @@ Z. Zhang and L. Zheng (2014). A Mutual Information Estimator with Exponentially 
        0, 0, 7, 11, 9, 6, 3, 0, 0, 1,
        0, 0, 4, 10, 6, 5, 1, 0, 0, 0),10,10,byrow=TRUE)
 MI.sd(x)  
+
+x = rbinom(100,20,.5)
+y = rbinom(100,20,.5)
+MI.z(table(x,y))
 }
