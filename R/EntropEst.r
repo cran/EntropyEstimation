@@ -196,7 +196,11 @@ MI.sd<- function(y){
             }#else
         }#for j
     }#for i
-    .C("MISd", as.integer(as.vector(x)), as.integer(length(x)), as.double(as.vector(g)), as.double(0.0))[[4]]
+    x=as.vector(x)
+    g = as.vector(g)
+    xx=x[x!=0]
+    gg = g[x!=0]
+    .C("MISd", as.integer(as.vector(xx)), as.integer(length(xx)), as.double(as.vector(gg)), as.double(0.0))[[4]]
 }
 
 

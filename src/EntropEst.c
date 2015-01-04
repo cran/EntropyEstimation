@@ -4,22 +4,27 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 
 void KlPlugin(int *c1, int *c2, int *h, double *result)
 {
     double kp = 0;
-    double q1[*h], q2[*h];
+    int len = *h;
+    double *q1, *q2;
+    q1= (double *)malloc(sizeof(double) * len);
+    q2= (double *)malloc(sizeof(double) * len);
+  
     int samples1 = 0, samples2 = 0;
     
-    for(int i = 0; i < *h; i++)
+    for(int i = 0; i < len; i++)
     {
         samples1 +=c1[i];
         samples2 += c2[i];
     }
     
     
-    for(int i = 0; i < *h; i++)
+    for(int i = 0; i < len; i++)
     {
         q1[i] = c1[i]/((double)samples1);
         q2[i] = c2[i]/((double)samples2);
@@ -28,7 +33,7 @@ void KlPlugin(int *c1, int *c2, int *h, double *result)
     }
     
     
-    for(int i = 0; i<*h; i++)
+    for(int i = 0; i< len; i++)
     {
         if(c1[i] ==0)
             continue;
@@ -38,6 +43,8 @@ void KlPlugin(int *c1, int *c2, int *h, double *result)
     }
     
     *result = kp;
+    free(q1);
+    free(q2);
     
 }
 
@@ -45,15 +52,16 @@ void KlSharp(int *c1, int *c2, int *h, double *result)
 {
     double ks =0;
     int samples1 = 0, samples2 = 0;
+    int len = *h;
     
-    for(int i = 0; i < *h; i++)
+    for(int i = 0; i < len; i++)
     {
         samples1 +=c1[i];
         samples2 += c2[i];
     }
     
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         if(c1[i] ==0)
             continue;
@@ -85,13 +93,15 @@ void KlSharp(int *c1, int *c2, int *h, double *result)
 
 void KlSd(int *c1orig, int *c2orig, int *h, double *result)
 {
-    double g[2*(*h-1)];
-    double c2[*h];
-    double c1[*h];
+    int len = *h;
+    double *g, *c1, *c2;
+    g = (double *)malloc(sizeof(double) * (2*(len - 1)));
+    c1= (double *)malloc(sizeof(double) * len);
+    c2= (double *)malloc(sizeof(double) * len);
     
     int samples1 = 0, samples2 = 0;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         samples1 +=c1orig[i];
         samples2 += c2orig[i];
@@ -105,7 +115,7 @@ void KlSd(int *c1orig, int *c2orig, int *h, double *result)
     }
     
     int index = 0;
-    for(int i = *h-1; i>=0; i--)
+    for(int i = len-1; i>=0; i--)
     {
         if(c1[i] !=0)
         {
@@ -115,25 +125,33 @@ void KlSd(int *c1orig, int *c2orig, int *h, double *result)
         
     }
     
-    for(int i = 0; i < *h-1; i++)
+    for(int i = 0; i < len-1; i++)
     {
         if(c1[i] ==0)
         {
             g[i] = 0;
-            g[*h-1+i] = 0;
+            g[len-1+i] = 0;
         }
         else
         {
             g[i] = log( c1[i]/((double)c2[i]) ) - log( c1[index]/((double)c2[index]) );
-            g[*h-1 + i] = -c1[i]*samples2/(((double)c2[i]) * samples1) + c1[index]*samples2/( ( (double)c2[index]) * samples1);
+            g[len-1 + i] = -c1[i]*samples2/(((double)c2[i]) * samples1) + c1[index]*samples2/( ( (double)c2[index]) * samples1);
         }
     }
     
-    double Sigma1[*h-1][*h-1];
-    double Sigma2[*h-1][*h-1];
-    for(int i = 0; i < *h -1; i++)
+    double **Sigma1, **Sigma2;
+    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+
+    Sigma2 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma2[i] = (double *)malloc(sizeof(double)*(len-1));
+    
+  
+    for(int i = 0; i < len -1; i++)
     {
-        for(int j = 0; j < *h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
             if(i==j)
             {
@@ -142,34 +160,50 @@ void KlSd(int *c1orig, int *c2orig, int *h, double *result)
             }
             else
             {
-                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
-                Sigma2[i][j] = -c2[i]*c2[j]/((double)(samples2*samples2));
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)samples1*samples1);
+                Sigma2[i][j] = -c2[i]*c2[j]/((double)samples2*samples2);
             }
         }
     }
     
     double var = 0;
-    for(int i = 0; i< *h-1; i++)
+    for(int i = 0; i< len-1; i++)
     {
-        for(int j = 0; j< *h-1; j++)
+        for(int j = 0; j< len-1; j++)
         {
-            var += g[i]*Sigma1[i][j]*g[j] + g[*h-1+i]*Sigma2[i][j]*g[*h-1+j];
+            var += g[i]*Sigma1[i][j]*g[j] + g[len-1+i]*Sigma2[i][j]*g[len-1+j];
         }
     }
     
 
     *result = sqrt(var);
+    
+    for(int i = 0; i < len-1; i++)
+        free(Sigma1[i]);
+    
+    free(Sigma1);
+    
+    for(int i = 0; i < len-1; i++)
+        free(Sigma2[i]);
+    
+    free(Sigma2);
+    free(g);
+    free(c1);
+    free(c2);
    
 }
 
 void SymSd(int *c1orig, int *c2orig, int *h, double *result)
 {
-    double g[2*(*h-1)];
-    double c2[*h];
-    double c1[*h];
+    int len = *h;
+    double *g, *c1, *c2;
+    g = (double *)malloc(sizeof(double) * (2*(len - 1)));
+    c1= (double *)malloc(sizeof(double) * len);
+    c2= (double *)malloc(sizeof(double) * len);
+    
     int samples1 = 0, samples2 = 0;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         samples1 +=c1orig[i];
         samples2 += c2orig[i];
@@ -182,7 +216,7 @@ void SymSd(int *c1orig, int *c2orig, int *h, double *result)
             c2[i] = 1;
     }
     int index = 0;
-    for(int i = *h-1; i>=0; i--)
+    for(int i = len-1; i>=0; i--)
     {
         if(c1[i] !=0)
         {
@@ -191,25 +225,32 @@ void SymSd(int *c1orig, int *c2orig, int *h, double *result)
         }
         
     }
-    for(int i = 0; i < *h-1; i++)
+    for(int i = 0; i < len-1; i++)
     {
         if(c1[i] ==0)
         {
             g[i] = 0;
-            g[*h-1+i] = 0;
+            g[len-1+i] = 0;
         }
         else
         {
             g[i] = .5*( log(c1[i]/((double)c2[i])) - log(c1[index]/((double)c2[index])) ) - .5*(c2[i]*samples1/(((double)c1[i]) * samples2) - c2[index]*samples1/( ((double)c1[index]) * samples2 ) );
-            g[*h-1 + i] = .5*(log(c2[i]/((double)c1[i])) - log(c2[index]/((double)c1[index])) ) - .5*( c1[i]*samples2/(((double)c2[i])*samples1) - c1[index]*samples2/(((double)c2[index])* samples1)  );
+            g[len-1 + i] = .5*(log(c2[i]/((double)c1[i])) - log(c2[index]/((double)c1[index])) ) - .5*( c1[i]*samples2/(((double)c2[i])*samples1) - c1[index]*samples2/(((double)c2[index])* samples1)  );
         }
     }
     
-    double Sigma1[*h-1][*h-1];
-    double Sigma2[*h-1][*h-1];
-    for(int i = 0; i < *h -1; i++)
+    double **Sigma1, **Sigma2;
+    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+    
+    Sigma2 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma2[i] = (double *)malloc(sizeof(double)*(len-1));
+
+    for(int i = 0; i < len -1; i++)
     {
-        for(int j = 0; j < *h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
             if(i==j)
             {
@@ -218,23 +259,37 @@ void SymSd(int *c1orig, int *c2orig, int *h, double *result)
             }
             else
             {
-                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
-                Sigma2[i][j] = -c2[i]*c2[j]/((double)(samples2*samples2));
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)samples1*samples1);
+                Sigma2[i][j] = -c2[i]*c2[j]/((double)samples2*samples2);
             }
         }
     }
     
     double var = 0;
-    for(int i = 0; i<*h-1; i++)
+    for(int i = 0; i < len-1; i++)
     {
-        for(int j = 0; j<*h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
-            var += g[i]*Sigma1[i][j]*g[j] + g[*h-1+i]*Sigma2[i][j]*g[*h-1+j];
+            var += g[i]*Sigma1[i][j]*g[j] + g[len-1+i]*Sigma2[i][j]*g[len-1+j];
         }
     }
     
 
     *result = sqrt(var);
+    
+    for(int i = 0; i < len-1; i++)
+        free(Sigma1[i]);
+    
+    free(Sigma1);
+    
+    for(int i = 0; i < len-1; i++)
+        free(Sigma2[i]);
+    
+    free(Sigma2);
+    free(g);
+    free(c1);
+    free(c2);
+
    
 }
 
@@ -242,14 +297,15 @@ void EntropySharp(int *c1, int *h, double *result)
 {
     double ent =0;
     int samples1 = 0;
+    int len = *h;
     
-    for(int i = 0; i < *h; i++)
+    for(int i = 0; i < len; i++)
     {
         samples1 +=c1[i];
     }
     
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         if(c1[i] ==0)
             continue;
@@ -277,15 +333,16 @@ void RenyiEqEntropySharp(int *c1, int *h, double *r, double *result)
 {
     double ent =0;
     int samples1 = 0;
+    int len = *h;
     
-    for(int i = 0; i < *h; i++)
+    for(int i = 0; i < len; i++)
     {
         samples1 +=c1[i];
     }
     
     double w;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         if(c1[i] ==0)
             continue;
@@ -313,19 +370,23 @@ void RenyiEqEntropySharp(int *c1, int *h, double *r, double *result)
 
 void EntropySd(int *c1orig, int *h, double *result)
 {
-    double g[(*h-1)];
-    double c1[*h];
+    
+    int len = *h;
+    double *g, *c1;
+    g = (double *)malloc(sizeof(double) * (len - 1));
+    c1= (double *)malloc(sizeof(double) * len);
+  
     
     int samples1 = 0;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         samples1 +=c1orig[i];
         c1[i] = c1orig[i];
     }
     
     int index = 0;
-    for(int i = *h-1; i>=0; i--)
+    for(int i = len-1; i>=0; i--)
     {
         if(c1[i] !=0)
         {
@@ -335,7 +396,7 @@ void EntropySd(int *c1orig, int *h, double *result)
         
     }
     
-    for(int i = 0; i < *h-1; i++)
+    for(int i = 0; i < len-1; i++)
     {
         if(c1[i] ==0)
         {
@@ -346,11 +407,14 @@ void EntropySd(int *c1orig, int *h, double *result)
             g[i] = log( c1[i]/((double)c1[index]) );
         }
     }
-    
-    double Sigma1[*h-1][*h-1];
-    for(int i = 0; i < *h -1; i++)
+    double **Sigma1;
+    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+
+    for(int i = 0; i < len -1; i++)
     {
-        for(int j = 0; j < *h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
             if(i==j)
             {
@@ -358,15 +422,15 @@ void EntropySd(int *c1orig, int *h, double *result)
             }
             else
             {
-                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)samples1*samples1);
             }
         }
     }
     
     double var = 0;
-    for(int i = 0; i< *h-1; i++)
+    for(int i = 0; i< len-1; i++)
     {
-        for(int j = 0; j< *h-1; j++)
+        for(int j = 0; j< len-1; j++)
         {
             var += g[i]*Sigma1[i][j]*g[j];
         }
@@ -375,23 +439,32 @@ void EntropySd(int *c1orig, int *h, double *result)
     
     *result = sqrt(var);
     
+    for(int i = 0; i < len-1; i++)
+        free(Sigma1[i]);
+    
+    free(Sigma1);
+    free(g);
+    free(c1);
 }
 
 void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
 {
-    double g[(*h-1)];
-    double c1[*h];
+    int len = *h;
+    double *g, *c1;
+    g = (double *)malloc(sizeof(double) * (len - 1));
+    c1= (double *)malloc(sizeof(double) * len);
+
     
     int samples1 = 0;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         samples1 +=c1orig[i];
         c1[i] = c1orig[i];
     }
     
     int index = 0;
-    for(int i = *h-1; i>=0; i--)
+    for(int i = len-1; i>=0; i--)
     {
         if(c1[i] !=0)
         {
@@ -401,7 +474,7 @@ void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
         
     }
     
-    for(int i = 0; i < *h-1; i++)
+    for(int i = 0; i < len-1; i++)
     {
         if(c1[i] ==0)
         {
@@ -413,10 +486,14 @@ void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
         }
     }
     
-    double Sigma1[*h-1][*h-1];
-    for(int i = 0; i < *h -1; i++)
+    double **Sigma1;
+    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+    
+    for(int i = 0; i < len -1; i++)
     {
-        for(int j = 0; j < *h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
             if(i==j)
             {
@@ -424,15 +501,15 @@ void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
             }
             else
             {
-                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)samples1*samples1);
             }
         }
     }
     
     double var = 0;
-    for(int i = 0; i< *h-1; i++)
+    for(int i = 0; i< len-1; i++)
     {
-        for(int j = 0; j< *h-1; j++)
+        for(int j = 0; j< len-1; j++)
         {
             var += g[i]*Sigma1[i][j]*g[j];
         }
@@ -441,20 +518,28 @@ void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
     
     *result = sqrt(var);
     
+    for(int i = 0; i < len-1; i++)
+        free(Sigma1[i]);
+    
+    free(Sigma1);
+    free(g);
+    free(c1);
+    
 }
 
 void GenSimpSharp(int *c1, int *h, int *r, double *result)
 {
     double ent =0;
     int samples1 = 0;
+    int len = *h;
     
-    for(int i = 0; i < *h; i++)
+    for(int i = 0; i < len; i++)
     {
         samples1 +=c1[i];
     }
     
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         if(c1[i] ==0)
             continue;
@@ -476,20 +561,26 @@ void GenSimpSharp(int *c1, int *h, int *r, double *result)
 
 void MISd(int *c1orig, int *h, double *g, double *result)
 {
-    double c1[*h];
+    int len = *h;
+    double *c1;
+    c1= (double *)malloc(sizeof(double) * len);
     
     int samples1 = 0;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         samples1 +=c1orig[i];
         c1[i] = c1orig[i];
     }
     
-    double Sigma1[*h-1][*h-1];
-    for(int i = 0; i < *h -1; i++)
+    double **Sigma1;
+    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+    
+    for(int i = 0; i < len -1; i++)
     {
-        for(int j = 0; j < *h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
             if(i==j)
             {
@@ -497,15 +588,15 @@ void MISd(int *c1orig, int *h, double *g, double *result)
             }
             else
             {
-                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)samples1*samples1);
             }
         }
     }
     
     double var = 0;
-    for(int i = 0; i< *h-1; i++)
+    for(int i = 0; i< len-1; i++)
     {
-        for(int j = 0; j< *h-1; j++)
+        for(int j = 0; j< len-1; j++)
         {
             var += g[i]*Sigma1[i][j]*g[j];
         }
@@ -514,23 +605,31 @@ void MISd(int *c1orig, int *h, double *g, double *result)
     
     *result = sqrt(var);
     
+    for(int i = 0; i < len-1; i++)
+        free(Sigma1[i]);
+    
+    free(Sigma1);
+    free(c1);
+    
 }
 
 void GenSimpSd(int *c1orig, int *h, int *r, double *result)
 {
-    double g[(*h-1)];
-    double c1[*h];
+    int len = *h;
+    double *g, *c1;
+    g = (double *)malloc(sizeof(double) * (len - 1));
+    c1= (double *)malloc(sizeof(double) * len);
     
     int samples1 = 0;
     
-    for(int i = 0; i< *h; i++)
+    for(int i = 0; i< len; i++)
     {
         samples1 +=c1orig[i];
         c1[i] = c1orig[i];
     }
     
     int index = 0;
-    for(int i = *h-1; i>=0; i--)
+    for(int i = len-1; i>=0; i--)
     {
         if(c1[i] !=0)
         {
@@ -540,7 +639,7 @@ void GenSimpSd(int *c1orig, int *h, int *r, double *result)
         
     }
     
-    for(int i = 0; i < *h-1; i++)
+    for(int i = 0; i < len-1; i++)
     {
         if(c1[i] ==0)
         {
@@ -552,10 +651,14 @@ void GenSimpSd(int *c1orig, int *h, int *r, double *result)
         }
     }
     
-    double Sigma1[*h-1][*h-1];
-    for(int i = 0; i < *h -1; i++)
+    double **Sigma1;
+    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    for(int i = 0; i < len-1; i++)
+        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+    
+    for(int i = 0; i < len -1; i++)
     {
-        for(int j = 0; j < *h-1; j++)
+        for(int j = 0; j < len-1; j++)
         {
             if(i==j)
             {
@@ -563,15 +666,15 @@ void GenSimpSd(int *c1orig, int *h, int *r, double *result)
             }
             else
             {
-                Sigma1[i][j] = -c1[i]*c1[j]/((double)(samples1*samples1));
+                Sigma1[i][j] = -c1[i]*c1[j]/((double)samples1*samples1);
             }
         }
     }
     
     double var = 0;
-    for(int i = 0; i< *h-1; i++)
+    for(int i = 0; i< len-1; i++)
     {
-        for(int j = 0; j< *h-1; j++)
+        for(int j = 0; j< len-1; j++)
         {
             var += g[i]*Sigma1[i][j]*g[j];
         }
@@ -579,6 +682,15 @@ void GenSimpSd(int *c1orig, int *h, int *r, double *result)
     
     
     *result = sqrt(var);
+    
+    
+    for(int i = 0; i < len-1; i++)
+        free(Sigma1[i]);
+    
+    free(Sigma1);
+    free(g);
+    free(c1);
+
     
 }
 

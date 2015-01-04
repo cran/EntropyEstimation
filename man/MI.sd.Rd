@@ -29,5 +29,5 @@ MI.sd(x)
 
 x = rbinom(100,20,.5)
 y = rbinom(100,20,.5)
-MI.z(table(x,y))
+MI.sd(table(x,y))
 }

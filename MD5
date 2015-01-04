@@ -1,9 +1,9 @@
-d0112581694dca68060258045dd11c52 *DESCRIPTION
-757a2cfe8170c3de4c0522402ac188ab *NAMESPACE
-c4c13f09e64a989b14898fb9660021ee *R/EntropEst.r
+3bf321b99430250edfdc58a50c2b73b7 *DESCRIPTION
+931c52545c324217b6a222be8d14c867 *NAMESPACE
+1d6d2e2fec3b9c59de32235b0942a7ee *R/EntropEst.r
 a10742f5a921801f234eaa9f9640aeca *man/Entropy.sd.Rd
 0b926cff28af7e67ab6236b2ae19d770 *man/Entropy.z.Rd
-018176ece44619dfa4933373a06ce12c *man/EntropyEstimation-package.Rd
+6a51e0aee56ba2f26a65015811341fcb *man/EntropyEstimation-package.Rd
 06566f436458034875a1bf7c7c8d479b *man/GenSimp.sd.Rd
 c626f160451890a10f520069dbb47789 *man/GenSimp.z.Rd
 77c291c2249148b75a609d71929cc0ef *man/Hill.sd.Rd
@@ -11,7 +11,7 @@ a05d26bd2da2842abf5ccedde2b380ae *man/Hill.z.Rd
 0b567aa98b269878e614244b2d4e36e7 *man/KL.Plugin.Rd
 a8e31b2d7ffb0eb3e3d2047141dee9dd *man/KL.sd.Rd
 977e364bb5bb9df26153b75b376c6c3e *man/KL.z.Rd
-a6905faaa78e6eff7feaa0171e5c8c6c *man/MI.sd.Rd
+513e3588ce475675b41a760a477186f5 *man/MI.sd.Rd
 366aaec840c4445ba337acabbf0fd5cc *man/MI.z.Rd
 f15104752d63c261c401809ad7d363ab *man/Renyi.sd.Rd
 91b8615be853527c68298fb1d3cacb24 *man/Renyi.z.Rd
@@ -22,4 +22,4 @@ cc74e0055032c440c6425e7aaa84fd4b *man/SymKL.sd.Rd
 9901eea55d6f90fd6a7b46e41aca06dd *man/SymKL.z.Rd
 ccff0e01dc1238c82f85b5407e0a71d5 *man/Tsallis.sd.Rd
 a4dd0fec7508c470ac1f5ce4121a0c35 *man/Tsallis.z.Rd
-71d59bb168ccf947c07245b1422ce96a *src/EntropEst.c
+cc5d13661c8299c9af9d570c4332165a *src/EntropEst.c

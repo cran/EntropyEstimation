@@ -10,8 +10,8 @@ Contains methods for the estimation of Shannon's entropy, variants of Renyi's en
 \tabular{ll}{
 Package: \tab EntropyEstimation\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2014-11-08\cr
+Version: \tab 1.2\cr
+Date: \tab 2014-01-04\cr
 License: \tab GPL3\cr}
 }
 \author{
