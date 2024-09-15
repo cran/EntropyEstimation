@@ -10,12 +10,12 @@ Contains methods for the estimation of Shannon's entropy, variants of Renyi's en
 \tabular{ll}{
 Package: \tab EntropyEstimation\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2014-01-04\cr
+Version: \tab 1.2.1\cr
+Date: \tab 2024-09-14\cr
 License: \tab GPL3\cr}
 }
 \author{
-Lijuan Cao <lcao@jcsu.edu> and Michael Grabchak <mgrabcha@uncc.edu> %Maintainer: Michael Grabchak <mgrabcha@uncc.edu>
+Lijuan Cao <lcao2@charlotte.edu> and Michael Grabchak <mgrabcha@charlotte.edu> %Maintainer: Michael Grabchak <mgrabcha@charlotte.edu>
 }
 \references{
 Z. Zhang (2012). Entropy estimation in Turing's' perspective. Neural Computation 24(5), 1368--1389.

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include<R.h>
+
 
 
 void KlPlugin(int *c1, int *c2, int *h, double *result)
@@ -12,8 +14,8 @@ void KlPlugin(int *c1, int *c2, int *h, double *result)
     double kp = 0;
     int len = *h;
     double *q1, *q2;
-    q1= (double *)malloc(sizeof(double) * len);
-    q2= (double *)malloc(sizeof(double) * len);
+    q1= (double *)R_Calloc(sizeof(double) * len, double);
+    q2= (double *)R_Calloc(sizeof(double) * len, double);
   
     int samples1 = 0, samples2 = 0;
     
@@ -37,7 +39,6 @@ void KlPlugin(int *c1, int *c2, int *h, double *result)
     {
         if(c1[i] ==0)
             continue;
-        //klplugin += q1[i] * log(q1[i]/q2c1[i]);
         kp += q1[i] * (log(q1[i])-log(q2[i]));
         
     }
@@ -95,9 +96,9 @@ void KlSd(int *c1orig, int *c2orig, int *h, double *result)
 {
     int len = *h;
     double *g, *c1, *c2;
-    g = (double *)malloc(sizeof(double) * (2*(len - 1)));
-    c1= (double *)malloc(sizeof(double) * len);
-    c2= (double *)malloc(sizeof(double) * len);
+    g = (double *)R_Calloc(sizeof(double) * (2*(len - 1)), double);
+    c1= (double *)R_Calloc(sizeof(double) * len, double);
+    c2= (double *)R_Calloc(sizeof(double) * len, double);
     
     int samples1 = 0, samples2 = 0;
     
@@ -140,13 +141,13 @@ void KlSd(int *c1orig, int *c2orig, int *h, double *result)
     }
     
     double **Sigma1, **Sigma2;
-    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma1 = (double**)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma1[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
 
-    Sigma2 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma2 = (double**)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma2[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma2[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
     
   
     for(int i = 0; i < len -1; i++)
@@ -197,9 +198,9 @@ void SymSd(int *c1orig, int *c2orig, int *h, double *result)
 {
     int len = *h;
     double *g, *c1, *c2;
-    g = (double *)malloc(sizeof(double) * (2*(len - 1)));
-    c1= (double *)malloc(sizeof(double) * len);
-    c2= (double *)malloc(sizeof(double) * len);
+    g = (double *)R_Calloc(sizeof(double) * (2*(len - 1)), double);
+    c1= (double *)R_Calloc(sizeof(double) * len, double);
+    c2= (double *)R_Calloc(sizeof(double) * len, double);
     
     int samples1 = 0, samples2 = 0;
     
@@ -240,13 +241,13 @@ void SymSd(int *c1orig, int *c2orig, int *h, double *result)
     }
     
     double **Sigma1, **Sigma2;
-    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma1 = (double **)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma1[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
     
-    Sigma2 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma2 = (double **)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma2[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma2[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
 
     for(int i = 0; i < len -1; i++)
     {
@@ -373,8 +374,8 @@ void EntropySd(int *c1orig, int *h, double *result)
     
     int len = *h;
     double *g, *c1;
-    g = (double *)malloc(sizeof(double) * (len - 1));
-    c1= (double *)malloc(sizeof(double) * len);
+    g = (double *)R_Calloc(sizeof(double) * (len - 1), double);
+    c1= (double *)R_Calloc(sizeof(double) * len, double);
   
     
     int samples1 = 0;
@@ -408,9 +409,9 @@ void EntropySd(int *c1orig, int *h, double *result)
         }
     }
     double **Sigma1;
-    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma1 = (double **)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma1[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
 
     for(int i = 0; i < len -1; i++)
     {
@@ -451,8 +452,8 @@ void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
 {
     int len = *h;
     double *g, *c1;
-    g = (double *)malloc(sizeof(double) * (len - 1));
-    c1= (double *)malloc(sizeof(double) * len);
+    g = (double *)R_Calloc(sizeof(double) * (len - 1), double);
+    c1= (double *)R_Calloc(sizeof(double) * len, double);
 
     
     int samples1 = 0;
@@ -487,9 +488,9 @@ void RenyiEqSd(int *c1orig, int *h, double *r, double *result)
     }
     
     double **Sigma1;
-    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma1 = (double **)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma1[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
     
     for(int i = 0; i < len -1; i++)
     {
@@ -563,7 +564,7 @@ void MISd(int *c1orig, int *h, double *g, double *result)
 {
     int len = *h;
     double *c1;
-    c1= (double *)malloc(sizeof(double) * len);
+    c1= (double *)R_Calloc(sizeof(double) * len, double);
     
     int samples1 = 0;
     
@@ -574,9 +575,9 @@ void MISd(int *c1orig, int *h, double *g, double *result)
     }
     
     double **Sigma1;
-    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma1 = (double **)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma1[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
     
     for(int i = 0; i < len -1; i++)
     {
@@ -617,8 +618,8 @@ void GenSimpSd(int *c1orig, int *h, int *r, double *result)
 {
     int len = *h;
     double *g, *c1;
-    g = (double *)malloc(sizeof(double) * (len - 1));
-    c1= (double *)malloc(sizeof(double) * len);
+    g = (double *)R_Calloc(sizeof(double) * (len - 1), double);
+    c1= (double *)R_Calloc(sizeof(double) * len, double);
     
     int samples1 = 0;
     
@@ -652,9 +653,9 @@ void GenSimpSd(int *c1orig, int *h, int *r, double *result)
     }
     
     double **Sigma1;
-    Sigma1 = (double **)malloc(sizeof(double*)*(len-1));
+    Sigma1 = (double **)R_Calloc(sizeof(double*)*(len-1), double);
     for(int i = 0; i < len-1; i++)
-        Sigma1[i] = (double *)malloc(sizeof(double)*(len-1));
+        Sigma1[i] = (double *)R_Calloc(sizeof(double)*(len-1), double);
     
     for(int i = 0; i < len -1; i++)
     {

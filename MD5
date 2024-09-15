@@ -1,9 +1,9 @@
-3bf321b99430250edfdc58a50c2b73b7 *DESCRIPTION
-931c52545c324217b6a222be8d14c867 *NAMESPACE
+64e7e60062c6ba0516e38484988ea82d *DESCRIPTION
+fa18e623c172c74b3180daeb1ed07f96 *NAMESPACE
 1d6d2e2fec3b9c59de32235b0942a7ee *R/EntropEst.r
 a10742f5a921801f234eaa9f9640aeca *man/Entropy.sd.Rd
 0b926cff28af7e67ab6236b2ae19d770 *man/Entropy.z.Rd
-6a51e0aee56ba2f26a65015811341fcb *man/EntropyEstimation-package.Rd
+7daf30d45bd5ff9a80644915ee8aee69 *man/EntropyEstimation-package.Rd
 06566f436458034875a1bf7c7c8d479b *man/GenSimp.sd.Rd
 c626f160451890a10f520069dbb47789 *man/GenSimp.z.Rd
 77c291c2249148b75a609d71929cc0ef *man/Hill.sd.Rd
@@ -22,4 +22,5 @@ cc74e0055032c440c6425e7aaa84fd4b *man/SymKL.sd.Rd
 9901eea55d6f90fd6a7b46e41aca06dd *man/SymKL.z.Rd
 ccff0e01dc1238c82f85b5407e0a71d5 *man/Tsallis.sd.Rd
 a4dd0fec7508c470ac1f5ce4121a0c35 *man/Tsallis.z.Rd
-cc5d13661c8299c9af9d570c4332165a *src/EntropEst.c
+e5f46e35ac2b69256655dce2fea09cf1 *src/EntropEst.c
+5a7e496bfd3dd457d4e62620510013fc *src/init.c
